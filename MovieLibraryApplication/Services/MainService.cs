@@ -47,9 +47,10 @@ public class MainService : IMainService
 
         Console.WriteLine("Please choose from the following options: ");
         Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("1. Search for a movie");
+        Console.WriteLine("1. Search for a Movie");
         Console.WriteLine("2. Add a Movie");
-        Console.WriteLine("3. Search for a movie ");
+        Console.WriteLine("3. List all Movies ");
+        Console.WriteLine();
         Console.WriteLine("----------------------------------------------");
         Console.ForegroundColor = textColor;
         movieLibraryMenu = Console.ReadLine();
@@ -58,20 +59,23 @@ public class MainService : IMainService
         {
             Console.WriteLine("Search by Movie Title");
             Console.WriteLine("----------------------------------------------");
+            Console.WriteLine();
+
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine("Please enter your search terms: ");
+            Console.ForegroundColor = textColor;
             var searchTerm = Console.ReadLine();
 
             var movies = _repository.Search(searchTerm);
 
             if (movies.Any())
             {
-                Console.Write("Search Results: ");
+                Console.WriteLine("Search Results: ");
 
                 foreach (var movie in movies)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write($"{movie.Title}");
-                    Console.Write($"{movie.ReleaseDate}");
+                    Console.WriteLine($"Title: {movie.Title} Release Date: {movie.ReleaseDate}");
                     Console.ForegroundColor = textColor;
                 }
             }
@@ -100,8 +104,7 @@ public class MainService : IMainService
                 {
                     Console.Write($"Movie added: ");
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write(movie.Title);
-                    Console.Write(movie.ReleaseDate);
+                    Console.WriteLine($"Title: {movie.Title} Release Date: {movie.ReleaseDate}");
                     Console.ForegroundColor = textColor;
                 }
                 else
@@ -128,13 +131,13 @@ public class MainService : IMainService
                 Console.WriteLine("Please enter a search term: ");
                 var searchTerm = Console.ReadLine();
 
-                var searchResults = _repository.FindMovie(searchTerm);
+                var searchResults = _repository.Search(searchTerm);
                 if (searchResults.Any())
                 {
                     Console.WriteLine("Search Results:");
 
                     Console.ForegroundColor = ConsoleColor.Green;
-                    searchResults.ForEach(movie => Console.WriteLine(movie.Title));
+                    //searchResults.ForEach(movie => Console.WriteLine(movie.Title));
                     Console.ForegroundColor = textColor;
 
                     searching = false;

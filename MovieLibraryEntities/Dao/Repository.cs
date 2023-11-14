@@ -49,7 +49,7 @@ namespace MovieLibraryEntities.Dao
 
         public Movie AddMovie(string title, DateTime releaseDate)
         {
-            var newMovie = new Movie()
+            Movie newMovie = new Movie()
             {
                 Title = title,
                 ReleaseDate = releaseDate

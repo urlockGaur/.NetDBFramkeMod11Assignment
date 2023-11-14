@@ -2,6 +2,7 @@
 using ContextExample.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using MovieLibraryEntities.Context;
 using MovieLibraryEntities.Dao;
 
 namespace ContextExample;
@@ -24,6 +25,7 @@ internal class Startup
         // Add new lines of code here to register any interfaces and concrete services you create
         services.AddTransient<IMainService, MainService>();
         services.AddTransient<IRepository, Repository>();
+        services.AddDbContextFactory<MovieContext>();
 
         return services.BuildServiceProvider();
     }
