@@ -63,5 +63,16 @@ namespace MovieLibraryEntities.Dao
 
             return newMovie;
         }
+
+        public void DeleteMovie(long movieId)
+        {
+            var movieDelete = _context.Movies.Find(movieId);
+
+            if(movieDelete != null)
+            {
+                _context.Movies.Remove(movieDelete);
+                _context.SaveChanges();
+            }
+        }
     }
 }

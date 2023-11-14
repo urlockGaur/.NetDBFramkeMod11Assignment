@@ -168,15 +168,43 @@ public class MainService : IMainService
             }
         else if (movieLibraryMenu == "4")
         {
-            Console.WriteLine("Please enter the Id of the movie you want to delete: ");
+            Console.WriteLine("Enter the Id of the movie you want to delete: ");
             var deleteInput = Console.ReadLine();
             Console.WriteLine("....");
 
-            var movieDelete = _repository.GetById(Convert.ToInt32(deleteInput));
+            if (int.TryParse(deleteInput, out int movieIdDelete)) 
+            {
+                
+                var movieDelete = _repository.GetById(Convert.ToInt32(deleteInput));
+                
+                if (movieDelete != null)
+                {
+                    Console.WriteLine($"Movie Details: ");
+                    Console.WriteLine($"Title: {movieDelete.Title}");
+                    Console.WriteLine($"Release Date: {movieDelete.ReleaseDate.ToString("MM/dd/yyy")}");
 
-            Console.WriteLine($"Are you sure you want to delete {movieDelete}: y / n ");
-
-        }
+                    Console.WriteLine($"Are you sure you want to delete {movieDelete}: y / n ");
+                    var deleteConfirmationInput = Console.ReadLine();
+                    if (deleteConfirmationInput.ToLower() == "y") 
+                    {
+                        _repository.DeleteMovie(movieIdDelete);
+                        Console.WriteLine("Movie deleted successfully.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Delete canceled.");
+                    }
+                }
+                else 
+                { 
+                    Console.WriteLine("Movie not found. Try again"); 
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter a valid Movie Id.");
+            }
         }
     }
+}
 
