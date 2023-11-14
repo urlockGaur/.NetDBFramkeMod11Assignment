@@ -50,6 +50,7 @@ public class MainService : IMainService
         Console.WriteLine("1. Search for a Movie");
         Console.WriteLine("2. Add a Movie");
         Console.WriteLine("3. List all Movies ");
+        Console.WriteLine("4. Delete a Movie ");
         Console.WriteLine();
         Console.WriteLine("----------------------------------------------");
         Console.ForegroundColor = textColor;
@@ -124,38 +125,53 @@ public class MainService : IMainService
         else if (movieLibraryMenu == "3")
 
         {
-            bool searching = true;
+                Console.WriteLine("Movie Library List: ");
+                Console.WriteLine("----------------------------------------------");
+                Console.WriteLine();
 
-            while (searching)
-            {
-                Console.WriteLine("Please enter a search term: ");
-                var searchTerm = Console.ReadLine();
-
-                var searchResults = _repository.Search(searchTerm);
-                if (searchResults.Any())
+                var movieList = _repository.GetAll();
+                if (movieList.Any())
                 {
-                    Console.WriteLine("Search Results:");
+                Console.ForegroundColor = ConsoleColor.Green;
 
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    //searchResults.ForEach(movie => Console.WriteLine(movie.Title));
-                    Console.ForegroundColor = textColor;
+                int moviesPerPage = 10;
 
-                    searching = false;
+                for (int i = 0; i < movieList.Count(); i += moviesPerPage)
+                {
+                    var moviesGroup = movieList.Skip(i).Take(moviesPerPage);
+
+                    foreach( var movie in moviesGroup)
+                    {
+                        string genre = string.Join(", ", movie.MovieGenres.Select(x => x.Genre.Name));
+                        Console.WriteLine($"Title: {movie.Title}, Release Date: {movie.ReleaseDate.ToString("MM/dd/yyy")}, Genres: {genre} ");                        
+                                              
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine("Press enter to view more movies or type 'exit' to stop...");
+                    var userInput = Console.ReadLine();
+
+                    if(userInput.ToLower() == "exit")
+                    {
+                        Console.Clear();
+                        break;
+                    }
+                    Console.Clear();
+                }
+                Console.ForegroundColor = textColor;
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("No movies found. Hit the 'Enter' key to search again or type 'X' to close the program.");
-                    Console.ForegroundColor = textColor;
-                    string searchAgain = Console.ReadLine();
-
-                    if (searchAgain.Equals("X", StringComparison.OrdinalIgnoreCase))
-                    {
-                        searching = false;
-                    }
+                    Console.ForegroundColor= ConsoleColor.Red;
+                    Console.WriteLine("No movies found...");
+                    Console.ForegroundColor = textColor;                   
                 }
-
             }
+        else if (movieLibraryMenu == "4")
+        {
+            Console.WriteLine("Please enter the Id of the movie you want to delete: ");
+            var deleteInput = Console.ReadLine();
+            Console.WriteLine();
+        }
         }
     }
-}
+
