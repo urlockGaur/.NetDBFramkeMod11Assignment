@@ -170,7 +170,12 @@ public class MainService : IMainService
         {
             Console.WriteLine("Please enter the Id of the movie you want to delete: ");
             var deleteInput = Console.ReadLine();
-            Console.WriteLine();
+            Console.WriteLine("....");
+
+            var movieDelete = _repository.GetById(Convert.ToInt32(deleteInput));
+
+            Console.WriteLine($"Are you sure you want to delete {movieDelete}: y / n ");
+
         }
         }
     }
