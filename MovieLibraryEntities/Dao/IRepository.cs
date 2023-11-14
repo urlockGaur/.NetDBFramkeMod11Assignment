@@ -13,6 +13,6 @@ namespace MovieLibraryEntities.Dao
 
         Movie AddMovie(string title, DateTime releaseDate);
 
-        void DeleteMovie(long movieId)
+        void DeleteMovie(long movieId);
     }
 }
