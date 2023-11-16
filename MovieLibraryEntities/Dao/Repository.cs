@@ -47,22 +47,31 @@ namespace MovieLibraryEntities.Dao
           //  return _context.Movies.Where(movie => movie.Title.Contains(title, StringComparison.OrdinalIgnoreCase)).ToList();
         //}
 
-        public Movie AddMovie(string title, DateTime releaseDate)
+        public Movie AddMovie(string title, DateTime releaseDate)  
         {
             using (var db = new MovieContext())
             {
-                var newMovie = new Movie()
+                Movie newMovie = new Movie()
                 {
                     Title = title,
                     ReleaseDate = releaseDate
                 };
 
-
-                db.Movies.Add(newMovie);
-                db.SaveChanges();
-                return newMovie;
-            }                                
+                try
+                {
+                    _context.Movies.Add(newMovie);
+                    _context.SaveChanges();
+                    return newMovie;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error saving movie: {ex.Message}");
+                    return null;
+                }
+            }
         }
+                                               
+        
 
         public void DeleteMovie(long movieId)
         {
