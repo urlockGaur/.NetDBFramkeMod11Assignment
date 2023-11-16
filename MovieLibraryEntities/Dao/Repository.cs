@@ -49,30 +49,33 @@ namespace MovieLibraryEntities.Dao
 
         public Movie AddMovie(string title, DateTime releaseDate)
         {
-            Movie newMovie = new Movie()
-            {
-                Title = title,
-                ReleaseDate = releaseDate
-            };
-
             using (var db = new MovieContext())
             {
+                var newMovie = new Movie()
+                {
+                    Title = title,
+                    ReleaseDate = releaseDate
+                };
+
+
                 db.Movies.Add(newMovie);
                 db.SaveChanges();
-            }
-
-            return newMovie;
+                return newMovie;
+            }                                
         }
 
         public void DeleteMovie(long movieId)
         {
-            var movieDelete = _context.Movies.Find(movieId);
+            using (var db = new MovieContext()) {
+                var movieDelete = _context.Movies.Find(movieId);
 
-            if(movieDelete != null)
-            {
-                _context.Movies.Remove(movieDelete);
-                _context.SaveChanges();
+                if (movieDelete != null)
+                {
+                    _context.Movies.Remove(movieDelete);
+                    _context.SaveChanges();
+                }
             }
+            
         }
     }
 }
