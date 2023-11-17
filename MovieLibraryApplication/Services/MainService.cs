@@ -87,7 +87,7 @@ public class MainService : IMainService
                 Console.ForegroundColor = textColor;
             }
         }
-        
+
         else if (movieLibraryMenu == "2")
         {
             Console.WriteLine("Please enter the Title of the movie you want to add: ");
@@ -105,7 +105,7 @@ public class MainService : IMainService
                 {
                     Console.Write($"Movie added: ");
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"Title: {movie.Title} Release Date: {movie.ReleaseDate}");
+                    Console.WriteLine($"Title: {movie.Title} | Release Date: {movie.ReleaseDate}");
                     Console.ForegroundColor = textColor;
                 }
                 else
@@ -125,86 +125,15 @@ public class MainService : IMainService
         else if (movieLibraryMenu == "3")
 
         {
-                Console.WriteLine("Movie Library List: ");
-                Console.WriteLine("----------------------------------------------");
-                Console.WriteLine();
+            _repository.ListMovieLibrary();
+        }
 
-                var movieList = _repository.GetAll();
-                if (movieList.Any())
-                {
-                Console.ForegroundColor = ConsoleColor.Green;
 
-                int moviesPerPage = 10;
-
-                for (int i = 0; i < movieList.Count(); i += moviesPerPage)
-                {
-                    var moviesGroup = movieList.Skip(i).Take(moviesPerPage);
-
-                    foreach( var movie in moviesGroup)
-                    {
-                        string genre = string.Join(", ", movie.MovieGenres.Select(x => x.Genre.Name));
-                        Console.WriteLine($"Title: {movie.Title}, Release Date: {movie.ReleaseDate.ToString("MM/dd/yyy")}, Genres: {genre} ");                        
-                                              
-                    }
-                    Console.WriteLine();
-                    Console.WriteLine("Press enter to view more movies or type 'exit' to stop...");
-                    var userInput = Console.ReadLine();
-
-                    if(userInput.ToLower() == "exit")
-                    {
-                        Console.Clear();
-                        break;
-                    }
-                    Console.Clear();
-                }
-                Console.ForegroundColor = textColor;
-                }
-                else
-                {
-                    Console.ForegroundColor= ConsoleColor.Red;
-                    Console.WriteLine("No movies found...");
-                    Console.ForegroundColor = textColor;                   
-                }
-            }
         else if (movieLibraryMenu == "4")
         {
-            Console.WriteLine("Enter the Id of the movie you want to delete: ");
-            var deleteInput = Console.ReadLine();
-            Console.WriteLine("....");
-
-            if (int.TryParse(deleteInput, out int movieIdDelete)) 
-            {
-                
-                var movieDelete = _repository.GetById(Convert.ToInt32(deleteInput));
-                
-                if (movieDelete != null)
-                {
-                    Console.WriteLine($"Movie Details: ");
-                    Console.WriteLine($"Title: {movieDelete.Title}");
-                    Console.WriteLine($"Release Date: {movieDelete.ReleaseDate.ToString("MM/dd/yyy")}");
-
-                    Console.WriteLine($"Are you sure you want to delete {movieDelete}: y / n ");
-                    var deleteConfirmationInput = Console.ReadLine();
-                    if (deleteConfirmationInput.ToLower() == "y") 
-                    {
-                        _repository.DeleteMovie(movieIdDelete);
-                        Console.WriteLine("Movie deleted successfully.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Delete canceled.");
-                    }
-                }
-                else 
-                { 
-                    Console.WriteLine("Movie not found. Try again"); 
-                }
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Please enter a valid Movie Id.");
-            }
+            _repository.DeleteMovie();
         }
+            
     }
 }
 

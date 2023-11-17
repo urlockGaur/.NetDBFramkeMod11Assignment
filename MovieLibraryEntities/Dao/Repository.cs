@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MovieLibraryEntities.Context;
 using MovieLibraryEntities.Models;
+using System.Diagnostics.Metrics;
+using System;
 
 namespace MovieLibraryEntities.Dao
 {
@@ -34,7 +36,7 @@ namespace MovieLibraryEntities.Dao
             return temp;
         }
 
-        public Movie GetById(int id)
+        public Movie GetById(long id)
         {
             return _context.Movies.FirstOrDefault(x => x.Id == id);
         }
@@ -73,18 +75,124 @@ namespace MovieLibraryEntities.Dao
                                                
         
 
-        public void DeleteMovie(long movieId)
+        public void DeleteMovie()
         {
-            using (var db = new MovieContext()) {
-                var movieDelete = _context.Movies.Find(movieId);
+            Console.WriteLine("Enter the Id of the movie you want to delete: ");
+            var deleteInput = Console.ReadLine();
+
+            if (long.TryParse(deleteInput, out long movieIdDelete))
+            {
+
+                var movieDelete = GetById(movieIdDelete);
 
                 if (movieDelete != null)
                 {
-                    _context.Movies.Remove(movieDelete);
-                    _context.SaveChanges();
+                    MovieDetails(movieDelete);
+                    ConsoleColor textColor = Console.ForegroundColor;
+                    Console.ForegroundColor = ConsoleColor.Red;
+                                       
+                    Console.WriteLine($"Are you sure you want to delete {movieDelete.Title}: y / n ");
+                    Console.ForegroundColor = textColor;
+                    var deleteConfirmationInput = Console.ReadLine();
+                    if (deleteConfirmationInput.ToLower() == "y")
+                    {
+                        try
+                        {
+                            var movieToDelete = _context.Movies.Find(movieIdDelete);
+
+                            if (movieToDelete != null)
+                            {
+                                _context.Movies.Remove(movieToDelete);
+                                _context.SaveChanges();
+                                Console.WriteLine("Movie deleted successfully.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Movie not found");
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"An error occured while attempting to delete the movie: {ex.Message}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Delete canceled");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Movie not found. Try again");
                 }
             }
-            
+            else
+            {
+                Console.WriteLine("Invalid input.Please enter a valid Movie Id.");
+            }
         }
+                        
+
+        private void MovieDetails(Movie movie)
+        {
+            ConsoleColor textColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            Console.WriteLine($"Movie Details: ");
+            Console.WriteLine($"Title: {movie.Title}");
+            Console.WriteLine($"Release Date: {movie.ReleaseDate.ToString("MM/dd/yyy")}");
+            Console.WriteLine();
+
+            Console.ForegroundColor = textColor;
+        }
+
+        public void ListMovieLibrary()
+        {
+            ConsoleColor textColor = Console.ForegroundColor;
+
+            try {
+                Console.WriteLine("Movie Library List: ");
+                Console.WriteLine("----------------------------------------------");
+                Console.WriteLine();
+
+                var movieList = GetAll();
+                if (movieList.Any())
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+
+                    int moviesPerPage = 10;
+
+                    for (int i = 0; i < movieList.Count(); i += moviesPerPage)
+                    {
+                        var moviesGroup = movieList.Skip(i).Take(moviesPerPage);
+
+                        foreach (var movie in moviesGroup)
+                        {
+                            string genre = string.Join(", ", movie.MovieGenres.Select(x => x.Genre.Name));
+                            Console.WriteLine($"Id: {movie.Id} | Title: {movie.Title} | Release Date: {movie.ReleaseDate.ToString("MM/dd/yyy")} | Genres: {genre} ");
+
+                        }
+                        Console.WriteLine();
+                        Console.WriteLine("Press enter to view more movies or type 'exit' to stop...");
+                        var userInput = Console.ReadLine();
+
+                        if (userInput.ToLower() == "exit")
+                        {
+                            Console.Clear();
+                            break;
+                        }
+                        Console.Clear();
+                    }
+                    Console.ForegroundColor = textColor;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor= ConsoleColor.Red;
+                Console.WriteLine($"An error occurred: {ex.Message}");
+            }
+        }
+
+            
     }
 }

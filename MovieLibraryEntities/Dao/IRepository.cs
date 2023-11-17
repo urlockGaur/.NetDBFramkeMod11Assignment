@@ -7,12 +7,14 @@ namespace MovieLibraryEntities.Dao
         IEnumerable<Movie> GetAll();
         IEnumerable<Movie> Search(string searchString);
 
-        Movie GetById(int id);
+        Movie GetById(long id);
 
         //List<Movie> FindMovie(string title);
 
         Movie AddMovie(string title, DateTime releaseDate);
 
-        void DeleteMovie(long movieId);
+        void DeleteMovie();
+
+        void ListMovieLibrary();
     }
 }
