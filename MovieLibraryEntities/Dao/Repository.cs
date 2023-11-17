@@ -75,14 +75,8 @@ namespace MovieLibraryEntities.Dao
                                                
         
 
-        public void DeleteMovie()
-        {
-            Console.WriteLine("Enter the Id of the movie you want to delete: ");
-            var deleteInput = Console.ReadLine();
-
-            if (long.TryParse(deleteInput, out long movieIdDelete))
-            {
-
+        public void DeleteMovie(long movieIdDelete)
+        {            
                 var movieDelete = GetById(movieIdDelete);
 
                 if (movieDelete != null)
@@ -126,11 +120,8 @@ namespace MovieLibraryEntities.Dao
                     Console.WriteLine("Movie not found. Try again");
                 }
             }
-            else
-            {
-                Console.WriteLine("Invalid input.Please enter a valid Movie Id.");
-            }
-        }
+            
+        
                         
 
         private void MovieDetails(Movie movie)

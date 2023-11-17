@@ -131,9 +131,18 @@ public class MainService : IMainService
 
         else if (movieLibraryMenu == "4")
         {
-            _repository.DeleteMovie();
+            Console.WriteLine("Enter the Id of the movie you want to delete: ");
+            var deleteInput = Console.ReadLine();
+
+            if (long.TryParse(deleteInput, out long movieIdDelete))
+            {
+                _repository.DeleteMovie(movieIdDelete);
+            }
+            else
+            {
+                Console.WriteLine("Invalid input. Please enter a valid Movie Id.");
+            }
         }
-            
     }
 }
 
